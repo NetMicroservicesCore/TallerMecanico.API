@@ -55,3 +55,14 @@ Se inició temporalmente Kestrel con el perfil `https` y se detuvo después de c
 - `GET https://localhost:7230/api/clientes` sin token: **401**, sobre JSON consistente y `X-Correlation-ID` presente.
 
 La sonda omitió solamente la validación de confianza del certificado local de desarrollo (`SkipCertificateCheck`); el tráfico usó HTTPS. No se modificó la configuración TLS del servidor. Esto no acredita la confianza del certificado ni una integración con el emisor real.
+
+## Actualización: Swagger UI, rutas v1 y diagnóstico de 404
+
+- El código anterior solo mapeaba el documento OpenAPI; no publicaba `/swagger` ni `/`. Abrir cualquiera de esas rutas con GET producía 404 y UseStatusCodePages lo convertía al wrapper genérico. El usuario confirmó GET pero no proporcionó la URL, por lo que no se afirma que esa fuera exactamente su solicitud original.
+- Swagger UI agregado con el paquete oficial Swashbuckle.AspNetCore.SwaggerUI; consume `/openapi/v1.json`. Referencia: https://learn.microsoft.com/en-us/aspnet/core/tutorials/web-api-help-pages-using-swagger
+- En Development, `/` redirige a Swagger y los perfiles de ejecución abren `/swagger`.
+- Contrato actual: únicamente `GET /api/v1/clientes` y `POST /api/v1/clientes`. Las menciones a los dos alias en la evidencia inicial describen el estado anterior.
+- Rutas inexistentes: 404 con mensaje específico. Token ausente: 401. Sin permiso: 403. La consulta sin filas sigue siendo 200 con items vacío.
+- Verificación actual: **24 pruebas aprobadas**, sin errores ni advertencias de compilación. Incluye interfaz Swagger, assets, URL de su documento, raíz, ausencia del alias y de v2; GET/POST reales con JWT firmado y SQL Server LocalDB.
+- Sonda HTTPS contra Kestrel: Swagger 200, OpenAPI 200, GET v1 sin token 401, ruta sin versión 404 y v2 404. La sonda usó SkipCertificateCheck para el certificado local; no se cambió TLS del servidor.
+- Verificación visual en navegador integrado: Swagger cargó el documento y mostró las dos operaciones v1 y Authorize. La API se dejó iniciada localmente; el PID del proceso dotnet se guarda en `artifacts/swagger.pid`.

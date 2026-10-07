@@ -60,10 +60,10 @@ No se impone unicidad del email porque no se solicitó y varios clientes podría
 
 ## Seguridad y operación
 
-- JWT Bearer obtenido de un emisor OIDC HTTPS; no se crean contraseñas ni claves de firma dentro de la API. Política aplicada a ambas rutas y verbos; 401 y 403 diferenciados.
+- JWT Bearer obtenido de un emisor OIDC HTTPS; no se crean contraseñas ni claves de firma dentro de la API. Política aplicada a los dos verbos de /api/v1/clientes; 401 y 403 diferenciados.
 - Model binding sobre DTOs, consultas parametrizadas de EF, límites de longitud, 32 KiB de cuerpo en Kestrel y cancelación hasta SQL. Fallos de infraestructura devuelven 500 genérico, no detalles internos.
 - `X-Correlation-ID` se basa en la traza del servidor; no se copia una cabecera arbitraria. No se registran cuerpos, tokens ni valores personales. Se suprime el logger predeterminado de excepciones HTTP para evitar que vuelva a registrar el detalle sensible; el manejador registra tipo y correlación. Al habilitar APM, revisar su captura automática de excepciones.
-- Respuestas con `Cache-Control: no-store` y `nosniff`; HSTS fuera de Development. OpenAPI solamente en Development, con esquema Bearer y operationId distintos para cada alias.
+- Respuestas con `Cache-Control: no-store` y `nosniff`; HSTS fuera de Development. OpenAPI y Swagger UI solamente en Development, con esquema Bearer y operationId distintos para GET y POST de v1. La raíz redirige a Swagger; no se publica el alias sin versión.
 - Límite inicial global de 64 solicitudes concurrentes y 600 por minuto POR INSTANCIA, sin cola. Son presupuestos conservadores configurados en código, no una garantía de throughput ni cuotas por usuario. Complementar con límites por consumidor en un gateway y dimensionarlos con mediciones.
 - No se habilita CORS por defecto. Agregar solo orígenes conocidos si una SPA necesita acceso cruzado.
 - Producción exige `ConnectionStrings__Taller`, `Authentication__Authority`, `Authentication__Audience` y `AllowedHosts`. Usar un gestor de secretos, cuenta SQL de mínimo privilegio, cifrado con certificado validado, respaldos y política de retención de datos personales. `TrustServerCertificate=True` se limita al ejemplo LocalDB.

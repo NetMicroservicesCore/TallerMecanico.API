@@ -66,10 +66,10 @@ builder.Services.AddOpenApi(options => options.AddDocumentTransformer((document,
         Type = SecuritySchemeType.Http, Scheme = "bearer", BearerFormat = "JWT", // Esquema estándar HTTP.
         Description = "Access token con claim permission=clientes.manage." // Explica el permiso necesario.
     };
-    foreach (var path in document.Paths.Where(x => x.Key.EndsWith("/clientes", StringComparison.Ordinal))) // Documenta ambos alias del recurso.
+    foreach (var path in document.Paths.Where(x => x.Key.EndsWith("/clientes", StringComparison.Ordinal))) // Documenta el recurso versionado.
     foreach (var operation in path.Value.Operations) // GET y POST.
     {
-        operation.Value.OperationId = operation.Key + (path.Key.Contains("/v1/") ? "ClientesV1" : "Clientes"); // Identificadores únicos para generadores de clientes.
+        operation.Value.OperationId = operation.Key + "ClientesV1"; // Identificadores únicos para generadores de clientes.
         operation.Value.Security = [new OpenApiSecurityRequirement // Exige Bearer en documentación.
         {
             [new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } }] = Array.Empty<string>() // HTTP Bearer no utiliza scopes OpenAPI.
@@ -90,7 +90,15 @@ app.UseExceptionHandler(); // Captura errores del pipeline siguiente.
 app.UseStatusCodePages(async context => // Completa errores sin cuerpo, incluidos 401 y 403.
 {
     var response = context.HttpContext.Response; // Estado determinado por ASP.NET.
-    await response.WriteAsJsonAsync(new ResponseWrapper<object>((HttpStatusCode)response.StatusCode, "La solicitud no pudo completarse.", null)); // Alinea sobre y HTTP.
+    var message = response.StatusCode switch // Distingue ruta inexistente de falta de autenticación.
+    {
+        404 => "Ruta no encontrada. Verifica la URL y la versión de la API.", // No se trata de una lista de clientes vacía.
+        401 => "Se requiere un token de acceso válido.", // Token ausente o inválido.
+        403 => "No tienes permiso para realizar esta operación.", // Identidad sin autorización.
+        405 => "Método HTTP no permitido para esta ruta.", // Ruta válida, verbo incorrecto.
+        _ => "La solicitud no pudo completarse." // Mantiene el sobre para otros errores.
+    };
+    await response.WriteAsJsonAsync(new ResponseWrapper<object>((HttpStatusCode)response.StatusCode, message, null)); // Alinea sobre y HTTP.
 });
 if (!app.Environment.IsDevelopment()) app.UseHsts(); // HSTS fuera de desarrollo.
 app.UseHttpsRedirection(); // Exige transporte cifrado al cliente.
@@ -98,7 +106,17 @@ app.UseRouting(); // Resuelve endpoint.
 app.UseRateLimiter(); // Protege incluso antes del trabajo criptográfico.
 app.UseAuthentication(); // Valida identidad.
 app.UseAuthorization(); // Evalúa permisos.
-if (app.Environment.IsDevelopment()) app.MapOpenApi(); // Solo publica documentación en desarrollo.
+if (app.Environment.IsDevelopment()) // La documentación interactiva permanece limitada a desarrollo.
+{
+    app.MapOpenApi(); // Publica /openapi/v1.json con el contrato de v1.
+    app.UseSwaggerUI(options => // Sirve HTML, JavaScript y estilos integrados del paquete.
+    {
+        options.RoutePrefix = "swagger"; // Interfaz accesible en /swagger/index.html.
+        options.SwaggerEndpoint("../openapi/v1.json", "Taller mecánico API v1"); // URL relativa compatible con PathBase.
+        options.DocumentTitle = "Taller mecánico · API v1"; // Título visible en navegador.
+    });
+    app.MapGet("/", () => Results.Redirect("swagger/index.html")).ExcludeFromDescription(); // Evita 404 al abrir la raíz en desarrollo.
+}
 app.MapControllers(); // Publica clientes.
 app.Run(); // No migra ni siembra automáticamente.
 public partial class Program { } // Permite pruebas de integración con WebApplicationFactory.

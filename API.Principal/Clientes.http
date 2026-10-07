@@ -3,7 +3,7 @@
 @token = REEMPLAZAR_CON_ACCESS_TOKEN
 
 ### Registrar cliente: espera 201; el id lo asigna el servidor.
-POST {{baseUrl}}/api/clientes
+POST {{baseUrl}}/api/v1/clientes
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -27,13 +27,13 @@ Content-Type: application/json
 }
 
 ### Consultar primera página ascendente: espera 200.
-GET {{baseUrl}}/api/clientes?pageNumber=1&pageSize=20&sortDirection=asc
+GET {{baseUrl}}/api/v1/clientes?pageNumber=1&pageSize=20&sortDirection=asc
 Authorization: Bearer {{token}}
 
 ### Consultar primera página descendente: espera 200.
-GET {{baseUrl}}/api/clientes?pageNumber=1&pageSize=20&sortDirection=desc
+GET {{baseUrl}}/api/v1/clientes?pageNumber=1&pageSize=20&sortDirection=desc
 Authorization: Bearer {{token}}
 
-### Alias versionado del mismo caso de uso: espera 200.
+### Consulta del recurso v1: espera 200.
 GET {{baseUrl}}/api/v1/clientes?pageNumber=1&pageSize=20&sortDirection=asc
 Authorization: Bearer {{token}}

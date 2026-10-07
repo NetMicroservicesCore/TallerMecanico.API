@@ -6,8 +6,7 @@ using Taller.Application.Clientes; // Casos de uso.
 namespace API.Principal.Controllers; // Adaptador HTTP.
 /// <summary>Registro y listado paginado de clientes.</summary>
 [ApiController] // Valida automáticamente cuerpo y query.
-[Route("api/clientes")] // Ruta solicitada.
-[Route("api/v1/clientes")] // Alias compatible con api.md.
+[Route("api/v1/clientes")] // Versión 1 explícita en la URL, alineada con api.md.
 [Authorize(Policy = "CanManageClientes")] // Exige token y permiso.
 [Produces("application/json")] // Contrato JSON.
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)] // Protege datos personales.

@@ -28,41 +28,40 @@ Cada fila corresponde a una línea no vacía del código entregado. Los comentar
 | 4 | `using Microsoft.AspNetCore.Mvc; // Contratos HTTP y OpenAPI.` | Contratos HTTP y OpenAPI. |
 | 5 | `using Taller.Application.Clientes; // Casos de uso.` | Casos de uso. |
 | 6 | `namespace API.Principal.Controllers; // Adaptador HTTP.` | Adaptador HTTP. |
-| 7 | `/// <summary>Registro y listado paginado de clientes.</summary>` | Documentación XML del miembro o contrato que sigue. |
+| 7 | `/// <summary>Registro y listado paginado de clientes.</summary>` | Documentación XML del miembro. |
 | 8 | `[ApiController] // Valida automáticamente cuerpo y query.` | Valida automáticamente cuerpo y query. |
-| 9 | `[Route("api/clientes")] // Ruta solicitada.` | Ruta solicitada. |
-| 10 | `[Route("api/v1/clientes")] // Alias compatible con api.md.` | Alias compatible con api.md. |
-| 11 | `[Authorize(Policy = "CanManageClientes")] // Exige token y permiso.` | Exige token y permiso. |
-| 12 | `[Produces("application/json")] // Contrato JSON.` | Contrato JSON. |
-| 13 | `[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)] // Protege datos personales.` | Protege datos personales. |
-| 14 | `[ProducesResponseType<ResponseWrapper<object>>(400)] // Entrada inválida.` | Entrada inválida. |
-| 15 | `[ProducesResponseType<ResponseWrapper<object>>(401)] // Sin autenticación.` | Sin autenticación. |
-| 16 | `[ProducesResponseType<ResponseWrapper<object>>(403)] // Sin permiso.` | Sin permiso. |
-| 17 | `[ProducesResponseType<ResponseWrapper<object>>(429)] // Saturación.` | Saturación. |
-| 18 | `[ProducesResponseType<ResponseWrapper<object>>(500)] // Fallo sanitizado.` | Fallo sanitizado. |
-| 19 | `public sealed class ClientesController(ClienteService service) : ControllerBase` | Declara el tipo y sus dependencias o clase base. |
-| 20 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 21 | `/// <summary>Ordena por nombre e Id con paginación acotada.</summary>` | Documentación XML del miembro o contrato que sigue. |
-| 22 | `[HttpGet] // Consulta sin cuerpo.` | Consulta sin cuerpo. |
-| 23 | `[EndpointSummary("Consultar clientes paginados")] // Documentación OpenAPI.` | Documentación OpenAPI. |
-| 24 | `[ProducesResponseType<ResponseWrapper<PagedResponse<ClienteDto>>>(200)] // Contrato de éxito.` | Contrato de éxito. |
-| 25 | `public async Task<IActionResult> Get([FromQuery] ClientesQuery query, CancellationToken cancellationToken)` | Declara la operación, sus parámetros y tipo de resultado; el cuerpo documenta cada paso. |
-| 26 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 27 | `var page = await service.ListAsync(query, cancellationToken); // Propaga cancelación.` | Propaga cancelación. |
-| 28 | `return Ok(new ResponseWrapper<PagedResponse<ClienteDto>>(HttpStatusCode.OK, "Clientes consultados.", page)); // Sobre y HTTP 200.` | Sobre y HTTP 200. |
-| 29 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 30 | `/// <summary>Valida y registra un cliente.</summary>` | Documentación XML del miembro o contrato que sigue. |
-| 31 | `[HttpPost] // Alta explícita.` | Alta explícita. |
-| 32 | `[Consumes("application/json")] // Rechaza otros formatos.` | Rechaza otros formatos. |
-| 33 | `[EndpointSummary("Registrar cliente")] // Documentación OpenAPI.` | Documentación OpenAPI. |
-| 34 | `[ProducesResponseType<ResponseWrapper<ClienteDto>>(201)] // Alta confirmada.` | Alta confirmada. |
-| 35 | `[ProducesResponseType<ResponseWrapper<object>>(415)] // Formato no soportado.` | Formato no soportado. |
-| 36 | `public async Task<IActionResult> Post([FromBody] RequestWrapper<CrearClienteRequest> request, CancellationToken cancellationToken)` | Declara la operación, sus parámetros y tipo de resultado; el cuerpo documenta cada paso. |
-| 37 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 38 | `var cliente = await service.CreateAsync(request.Data, cancellationToken); // Delega persistencia.` | Delega persistencia. |
-| 39 | `return StatusCode(201, new ResponseWrapper<ClienteDto>(HttpStatusCode.Created, "Cliente registrado.", cliente)); // No inventa un GET por Id inexistente.` | No inventa un GET por Id inexistente. |
-| 40 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 41 | `}` | Cierra el bloque, inicialización o llamada precedente. |
+| 9 | `[Route("api/v1/clientes")] // Versión 1 explícita en la URL, alineada con api.md.` | Versión 1 explícita en la URL, alineada con api.md. |
+| 10 | `[Authorize(Policy = "CanManageClientes")] // Exige token y permiso.` | Exige token y permiso. |
+| 11 | `[Produces("application/json")] // Contrato JSON.` | Contrato JSON. |
+| 12 | `[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)] // Protege datos personales.` | Protege datos personales. |
+| 13 | `[ProducesResponseType<ResponseWrapper<object>>(400)] // Entrada inválida.` | Entrada inválida. |
+| 14 | `[ProducesResponseType<ResponseWrapper<object>>(401)] // Sin autenticación.` | Sin autenticación. |
+| 15 | `[ProducesResponseType<ResponseWrapper<object>>(403)] // Sin permiso.` | Sin permiso. |
+| 16 | `[ProducesResponseType<ResponseWrapper<object>>(429)] // Saturación.` | Saturación. |
+| 17 | `[ProducesResponseType<ResponseWrapper<object>>(500)] // Fallo sanitizado.` | Fallo sanitizado. |
+| 18 | `public sealed class ClientesController(ClienteService service) : ControllerBase` | Declaración o continuación del bloque documentado en el código. |
+| 19 | `{` | Delimita el bloque o expresión precedente. |
+| 20 | `/// <summary>Ordena por nombre e Id con paginación acotada.</summary>` | Documentación XML del miembro. |
+| 21 | `[HttpGet] // Consulta sin cuerpo.` | Consulta sin cuerpo. |
+| 22 | `[EndpointSummary("Consultar clientes paginados")] // Documentación OpenAPI.` | Documentación OpenAPI. |
+| 23 | `[ProducesResponseType<ResponseWrapper<PagedResponse<ClienteDto>>>(200)] // Contrato de éxito.` | Contrato de éxito. |
+| 24 | `public async Task<IActionResult> Get([FromQuery] ClientesQuery query, CancellationToken cancellationToken)` | Declaración o continuación del bloque documentado en el código. |
+| 25 | `{` | Delimita el bloque o expresión precedente. |
+| 26 | `var page = await service.ListAsync(query, cancellationToken); // Propaga cancelación.` | Propaga cancelación. |
+| 27 | `return Ok(new ResponseWrapper<PagedResponse<ClienteDto>>(HttpStatusCode.OK, "Clientes consultados.", page)); // Sobre y HTTP 200.` | Sobre y HTTP 200. |
+| 28 | `}` | Delimita el bloque o expresión precedente. |
+| 29 | `/// <summary>Valida y registra un cliente.</summary>` | Documentación XML del miembro. |
+| 30 | `[HttpPost] // Alta explícita.` | Alta explícita. |
+| 31 | `[Consumes("application/json")] // Rechaza otros formatos.` | Rechaza otros formatos. |
+| 32 | `[EndpointSummary("Registrar cliente")] // Documentación OpenAPI.` | Documentación OpenAPI. |
+| 33 | `[ProducesResponseType<ResponseWrapper<ClienteDto>>(201)] // Alta confirmada.` | Alta confirmada. |
+| 34 | `[ProducesResponseType<ResponseWrapper<object>>(415)] // Formato no soportado.` | Formato no soportado. |
+| 35 | `public async Task<IActionResult> Post([FromBody] RequestWrapper<CrearClienteRequest> request, CancellationToken cancellationToken)` | Declaración o continuación del bloque documentado en el código. |
+| 36 | `{` | Delimita el bloque o expresión precedente. |
+| 37 | `var cliente = await service.CreateAsync(request.Data, cancellationToken); // Delega persistencia.` | Delega persistencia. |
+| 38 | `return StatusCode(201, new ResponseWrapper<ClienteDto>(HttpStatusCode.Created, "Cliente registrado.", cliente)); // No inventa un GET por Id inexistente.` | No inventa un GET por Id inexistente. |
+| 39 | `}` | Delimita el bloque o expresión precedente. |
+| 40 | `}` | Delimita el bloque o expresión precedente. |
 
 ## API.Principal\Middleware\ApiExceptionHandler.cs
 
@@ -114,14 +113,14 @@ Cada fila corresponde a una línea no vacía del código entregado. Los comentar
 | 24 | `builder.Services.AddExceptionHandler<ApiExceptionHandler>(); // Errores sanitizados.` | Errores sanitizados. |
 | 25 | `builder.Services.AddProblemDetails(); // Infraestructura del manejador global.` | Infraestructura del manejador global. |
 | 26 | `builder.Services.AddControllers().ConfigureApiBehaviorOptions(options => // Personaliza validación automática.` | Personaliza validación automática. |
-| 27 | `{` | Abre el bloque de definición o inicialización precedente. |
+| 27 | `{` | Delimita el bloque o expresión precedente. |
 | 28 | `options.SuppressMapClientErrors = true; // Evita otro formato de errores.` | Evita otro formato de errores. |
 | 29 | `options.InvalidModelStateResponseFactory = context => new BadRequestObjectResult( // Conserva HTTP 400.` | Conserva HTTP 400. |
-| 30 | `new ResponseWrapper<object>(HttpStatusCode.BadRequest, "Solicitud inválida.",` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
+| 30 | `new ResponseWrapper<object>(HttpStatusCode.BadRequest, "Solicitud inválida.",` | Declaración o continuación del bloque documentado en el código. |
 | 31 | `context.ModelState.Where(x => x.Value?.Errors.Count > 0).ToDictionary(x => x.Key, _ => new[] { "Valor inválido o requerido." }))); // No refleja valores ni errores del parser.` | No refleja valores ni errores del parser. |
-| 32 | `});` | Cierra el bloque, inicialización o llamada precedente. |
+| 32 | `});` | Delimita el bloque o expresión precedente. |
 | 33 | `builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => // Valida access tokens externos.` | Valida access tokens externos. |
-| 34 | `{` | Abre el bloque de definición o inicialización precedente. |
+| 34 | `{` | Delimita el bloque o expresión precedente. |
 | 35 | `options.Authority = authority; // Descubrimiento de claves públicas.` | Descubrimiento de claves públicas. |
 | 36 | `options.Audience = audience; // Token dirigido a esta API.` | Token dirigido a esta API. |
 | 37 | `options.RequireHttpsMetadata = true; // Solo descubrimiento cifrado.` | Solo descubrimiento cifrado. |
@@ -132,66 +131,84 @@ Cada fila corresponde a una línea no vacía del código entregado. Los comentar
 | 42 | `options.TokenValidationParameters.ValidateAudience = true; // Valida destinatario.` | Valida destinatario. |
 | 43 | `options.TokenValidationParameters.ValidateLifetime = true; // Rechaza expiración.` | Rechaza expiración. |
 | 44 | `options.TokenValidationParameters.RequireSignedTokens = true; // Rechaza tokens sin firma.` | Rechaza tokens sin firma. |
-| 45 | `});` | Cierra el bloque, inicialización o llamada precedente. |
+| 45 | `});` | Delimita el bloque o expresión precedente. |
 | 46 | `builder.Services.AddAuthorization(options => options.AddPolicy("CanManageClientes", policy => // Política especificada.` | Política especificada. |
 | 47 | `policy.RequireAuthenticatedUser().RequireClaim("permission", "clientes.manage"))); // Permiso explícito.` | Permiso explícito. |
 | 48 | `builder.Services.AddRateLimiter(options => // Límites por instancia; complementar en gateway distribuido.` | Límites por instancia; complementar en gateway distribuido. |
-| 49 | `{` | Abre el bloque de definición o inicialización precedente. |
+| 49 | `{` | Delimita el bloque o expresión precedente. |
 | 50 | `options.GlobalLimiter = PartitionedRateLimiter.CreateChained( // Presupuesto de concurrencia y frecuencia.` | Presupuesto de concurrencia y frecuencia. |
 | 51 | `PartitionedRateLimiter.Create<HttpContext, string>(_ => RateLimitPartition.GetConcurrencyLimiter("concurrency", _ => // Clave fija evita cardinalidad ilimitada.` | Clave fija evita cardinalidad ilimitada. |
 | 52 | `new ConcurrencyLimiterOptions { PermitLimit = 64, QueueLimit = 0 })), // Sin cola de saturación.` | Sin cola de saturación. |
 | 53 | `PartitionedRateLimiter.Create<HttpContext, string>(_ => RateLimitPartition.GetFixedWindowLimiter("requests", _ => // Límite agregado.` | Límite agregado. |
 | 54 | `new FixedWindowRateLimiterOptions { PermitLimit = 600, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }))); // Ajustar con mediciones.` | Ajustar con mediciones. |
 | 55 | `options.OnRejected = async (context, token) => // Error JSON uniforme.` | Error JSON uniforme. |
-| 56 | `{` | Abre el bloque de definición o inicialización precedente. |
+| 56 | `{` | Delimita el bloque o expresión precedente. |
 | 57 | `context.HttpContext.Response.StatusCode = 429; // Demasiadas solicitudes.` | Demasiadas solicitudes. |
 | 58 | `await context.HttpContext.Response.WriteAsJsonAsync(new ResponseWrapper<object>((HttpStatusCode)429, "Límite de solicitudes excedido.", null), token); // Sin datos internos.` | Sin datos internos. |
-| 59 | `};` | Cierra el bloque, inicialización o llamada precedente. |
-| 60 | `});` | Cierra el bloque, inicialización o llamada precedente. |
+| 59 | `};` | Delimita el bloque o expresión precedente. |
+| 60 | `});` | Delimita el bloque o expresión precedente. |
 | 61 | `builder.Services.AddOpenApi(options => options.AddDocumentTransformer((document, context, token) => // Enriquece el contrato sin paquetes adicionales.` | Enriquece el contrato sin paquetes adicionales. |
-| 62 | `{` | Abre el bloque de definición o inicialización precedente. |
+| 62 | `{` | Delimita el bloque o expresión precedente. |
 | 63 | `document.Components ??= new OpenApiComponents(); // Inicializa componentes si no hay esquemas.` | Inicializa componentes si no hay esquemas. |
 | 64 | `document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme // Access token del proveedor externo.` | Access token del proveedor externo. |
-| 65 | `{` | Abre el bloque de definición o inicialización precedente. |
+| 65 | `{` | Delimita el bloque o expresión precedente. |
 | 66 | `Type = SecuritySchemeType.Http, Scheme = "bearer", BearerFormat = "JWT", // Esquema estándar HTTP.` | Esquema estándar HTTP. |
 | 67 | `Description = "Access token con claim permission=clientes.manage." // Explica el permiso necesario.` | Explica el permiso necesario. |
-| 68 | `};` | Cierra el bloque, inicialización o llamada precedente. |
-| 69 | `foreach (var path in document.Paths.Where(x => x.Key.EndsWith("/clientes", StringComparison.Ordinal))) // Documenta ambos alias del recurso.` | Documenta ambos alias del recurso. |
+| 68 | `};` | Delimita el bloque o expresión precedente. |
+| 69 | `foreach (var path in document.Paths.Where(x => x.Key.EndsWith("/clientes", StringComparison.Ordinal))) // Documenta el recurso versionado.` | Documenta el recurso versionado. |
 | 70 | `foreach (var operation in path.Value.Operations) // GET y POST.` | GET y POST. |
-| 71 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 72 | `operation.Value.OperationId = operation.Key + (path.Key.Contains("/v1/") ? "ClientesV1" : "Clientes"); // Identificadores únicos para generadores de clientes.` | Identificadores únicos para generadores de clientes. |
+| 71 | `{` | Delimita el bloque o expresión precedente. |
+| 72 | `operation.Value.OperationId = operation.Key + "ClientesV1"; // Identificadores únicos para generadores de clientes.` | Identificadores únicos para generadores de clientes. |
 | 73 | `operation.Value.Security = [new OpenApiSecurityRequirement // Exige Bearer en documentación.` | Exige Bearer en documentación. |
-| 74 | `{` | Abre el bloque de definición o inicialización precedente. |
+| 74 | `{` | Delimita el bloque o expresión precedente. |
 | 75 | `[new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } }] = Array.Empty<string>() // HTTP Bearer no utiliza scopes OpenAPI.` | HTTP Bearer no utiliza scopes OpenAPI. |
-| 76 | `}];` | Cierra el bloque, inicialización o llamada precedente. |
-| 77 | `}` | Cierra el bloque, inicialización o llamada precedente. |
+| 76 | `}];` | Delimita el bloque o expresión precedente. |
+| 77 | `}` | Delimita el bloque o expresión precedente. |
 | 78 | `return Task.CompletedTask; // Transformación local sin I/O.` | Transformación local sin I/O. |
-| 79 | `}));` | Cierra el bloque, inicialización o llamada precedente. |
+| 79 | `}));` | Delimita el bloque o expresión precedente. |
 | 80 | `var app = builder.Build(); // Construye el servidor.` | Construye el servidor. |
 | 81 | `app.Use(async (context, next) => // Correlación controlada por el servidor.` | Correlación controlada por el servidor. |
-| 82 | `{` | Abre el bloque de definición o inicialización precedente. |
+| 82 | `{` | Delimita el bloque o expresión precedente. |
 | 83 | `context.TraceIdentifier = Activity.Current?.TraceId.ToString() ?? Guid.NewGuid().ToString("N"); // No confía en cabeceras arbitrarias.` | No confía en cabeceras arbitrarias. |
 | 84 | `context.Response.Headers["X-Correlation-ID"] = context.TraceIdentifier; // Identifica la solicitud.` | Identifica la solicitud. |
 | 85 | `context.Response.Headers["X-Content-Type-Options"] = "nosniff"; // Impide interpretación incorrecta del contenido.` | Impide interpretación incorrecta del contenido. |
 | 86 | `context.Response.Headers.CacheControl = "no-store"; // Protege datos personales.` | Protege datos personales. |
 | 87 | `await next(context); // Continúa el pipeline.` | Continúa el pipeline. |
-| 88 | `});` | Cierra el bloque, inicialización o llamada precedente. |
+| 88 | `});` | Delimita el bloque o expresión precedente. |
 | 89 | `app.UseExceptionHandler(); // Captura errores del pipeline siguiente.` | Captura errores del pipeline siguiente. |
 | 90 | `app.UseStatusCodePages(async context => // Completa errores sin cuerpo, incluidos 401 y 403.` | Completa errores sin cuerpo, incluidos 401 y 403. |
-| 91 | `{` | Abre el bloque de definición o inicialización precedente. |
+| 91 | `{` | Delimita el bloque o expresión precedente. |
 | 92 | `var response = context.HttpContext.Response; // Estado determinado por ASP.NET.` | Estado determinado por ASP.NET. |
-| 93 | `await response.WriteAsJsonAsync(new ResponseWrapper<object>((HttpStatusCode)response.StatusCode, "La solicitud no pudo completarse.", null)); // Alinea sobre y HTTP.` | Alinea sobre y HTTP. |
-| 94 | `});` | Cierra el bloque, inicialización o llamada precedente. |
-| 95 | `if (!app.Environment.IsDevelopment()) app.UseHsts(); // HSTS fuera de desarrollo.` | HSTS fuera de desarrollo. |
-| 96 | `app.UseHttpsRedirection(); // Exige transporte cifrado al cliente.` | Exige transporte cifrado al cliente. |
-| 97 | `app.UseRouting(); // Resuelve endpoint.` | Resuelve endpoint. |
-| 98 | `app.UseRateLimiter(); // Protege incluso antes del trabajo criptográfico.` | Protege incluso antes del trabajo criptográfico. |
-| 99 | `app.UseAuthentication(); // Valida identidad.` | Valida identidad. |
-| 100 | `app.UseAuthorization(); // Evalúa permisos.` | Evalúa permisos. |
-| 101 | `if (app.Environment.IsDevelopment()) app.MapOpenApi(); // Solo publica documentación en desarrollo.` | Solo publica documentación en desarrollo. |
-| 102 | `app.MapControllers(); // Publica clientes.` | Publica clientes. |
-| 103 | `app.Run(); // No migra ni siembra automáticamente.` | No migra ni siembra automáticamente. |
-| 104 | `public partial class Program { } // Permite pruebas de integración con WebApplicationFactory.` | Permite pruebas de integración con WebApplicationFactory. |
+| 93 | `var message = response.StatusCode switch // Distingue ruta inexistente de falta de autenticación.` | Distingue ruta inexistente de falta de autenticación. |
+| 94 | `{` | Delimita el bloque o expresión precedente. |
+| 95 | `404 => "Ruta no encontrada. Verifica la URL y la versión de la API.", // No se trata de una lista de clientes vacía.` | No se trata de una lista de clientes vacía. |
+| 96 | `401 => "Se requiere un token de acceso válido.", // Token ausente o inválido.` | Token ausente o inválido. |
+| 97 | `403 => "No tienes permiso para realizar esta operación.", // Identidad sin autorización.` | Identidad sin autorización. |
+| 98 | `405 => "Método HTTP no permitido para esta ruta.", // Ruta válida, verbo incorrecto.` | Ruta válida, verbo incorrecto. |
+| 99 | `_ => "La solicitud no pudo completarse." // Mantiene el sobre para otros errores.` | Mantiene el sobre para otros errores. |
+| 100 | `};` | Delimita el bloque o expresión precedente. |
+| 101 | `await response.WriteAsJsonAsync(new ResponseWrapper<object>((HttpStatusCode)response.StatusCode, message, null)); // Alinea sobre y HTTP.` | Alinea sobre y HTTP. |
+| 102 | `});` | Delimita el bloque o expresión precedente. |
+| 103 | `if (!app.Environment.IsDevelopment()) app.UseHsts(); // HSTS fuera de desarrollo.` | HSTS fuera de desarrollo. |
+| 104 | `app.UseHttpsRedirection(); // Exige transporte cifrado al cliente.` | Exige transporte cifrado al cliente. |
+| 105 | `app.UseRouting(); // Resuelve endpoint.` | Resuelve endpoint. |
+| 106 | `app.UseRateLimiter(); // Protege incluso antes del trabajo criptográfico.` | Protege incluso antes del trabajo criptográfico. |
+| 107 | `app.UseAuthentication(); // Valida identidad.` | Valida identidad. |
+| 108 | `app.UseAuthorization(); // Evalúa permisos.` | Evalúa permisos. |
+| 109 | `if (app.Environment.IsDevelopment()) // La documentación interactiva permanece limitada a desarrollo.` | La documentación interactiva permanece limitada a desarrollo. |
+| 110 | `{` | Delimita el bloque o expresión precedente. |
+| 111 | `app.MapOpenApi(); // Publica /openapi/v1.json con el contrato de v1.` | Publica /openapi/v1.json con el contrato de v1. |
+| 112 | `app.UseSwaggerUI(options => // Sirve HTML, JavaScript y estilos integrados del paquete.` | Sirve HTML, JavaScript y estilos integrados del paquete. |
+| 113 | `{` | Delimita el bloque o expresión precedente. |
+| 114 | `options.RoutePrefix = "swagger"; // Interfaz accesible en /swagger/index.html.` | Interfaz accesible en /swagger/index.html. |
+| 115 | `options.SwaggerEndpoint("../openapi/v1.json", "Taller mecánico API v1"); // URL relativa compatible con PathBase.` | URL relativa compatible con PathBase. |
+| 116 | `options.DocumentTitle = "Taller mecánico · API v1"; // Título visible en navegador.` | Título visible en navegador. |
+| 117 | `});` | Delimita el bloque o expresión precedente. |
+| 118 | `app.MapGet("/", () => Results.Redirect("swagger/index.html")).ExcludeFromDescription(); // Evita 404 al abrir la raíz en desarrollo.` | Evita 404 al abrir la raíz en desarrollo. |
+| 119 | `}` | Delimita el bloque o expresión precedente. |
+| 120 | `app.MapControllers(); // Publica clientes.` | Publica clientes. |
+| 121 | `app.Run(); // No migra ni siembra automáticamente.` | No migra ni siembra automáticamente. |
+| 122 | `public partial class Program { } // Permite pruebas de integración con WebApplicationFactory.` | Permite pruebas de integración con WebApplicationFactory. |
 
 ## Taller.Application\Clientes\ClienteDto.cs
 
@@ -811,165 +828,189 @@ Cada fila corresponde a una línea no vacía del código entregado. Los comentar
 | 9 | `using Taller.Application.Clientes; // Contratos del adaptador que falla.` | Contratos del adaptador que falla. |
 | 10 | `using Taller.Domain; // Tipo del puerto de escritura.` | Tipo del puerto de escritura. |
 | 11 | `namespace Taller.Tests; // Integración API y SQL Server.` | Integración API y SQL Server. |
-| 12 | `/// <summary>Verifica comportamiento observable sin reemplazar repositorio, EF ni autenticación.</summary>` | Documentación XML del miembro o contrato que sigue. |
-| 13 | `public sealed class ClientesTests(ClientesFactory factory) : IClassFixture<ClientesFactory>` | Declara el tipo y sus dependencias o clase base. |
-| 14 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 15 | `private HttpRequestMessage Request(HttpMethod method, string path, string? token = null, object? body = null)` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 16 | `{` | Abre el bloque de definición o inicialización precedente. |
+| 12 | `/// <summary>Verifica comportamiento observable sin reemplazar repositorio, EF ni autenticación.</summary>` | Documentación XML del miembro. |
+| 13 | `public sealed class ClientesTests(ClientesFactory factory) : IClassFixture<ClientesFactory>` | Declaración o continuación del bloque documentado en el código. |
+| 14 | `{` | Delimita el bloque o expresión precedente. |
+| 15 | `private HttpRequestMessage Request(HttpMethod method, string path, string? token = null, object? body = null)` | Declaración o continuación del bloque documentado en el código. |
+| 16 | `{` | Delimita el bloque o expresión precedente. |
 | 17 | `var request = new HttpRequestMessage(method, path); // Crea solicitud aislada.` | Crea solicitud aislada. |
 | 18 | `if (token is not null) request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token); // No comparte cabeceras mutables.` | No comparte cabeceras mutables. |
 | 19 | `if (body is not null) request.Content = JsonContent.Create(body); // Usa JSON real.` | Usa JSON real. |
 | 20 | `return request; // El llamador dispone la solicitud.` | El llamador dispone la solicitud. |
-| 21 | `}` | Cierra el bloque, inicialización o llamada precedente. |
+| 21 | `}` | Delimita el bloque o expresión precedente. |
 | 22 | `private static object Body(string nombre = "Ana", string email = "ana@example.test") => new // Datos ficticios sin PII real.` | Datos ficticios sin PII real. |
-| 23 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 24 | `data = new { nombre, apellidoPaterno = "Perez", apellidoMaterno = "Lopez", telefono = "5551234567", telefonoCelular = "+525551234568", email,` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
+| 23 | `{` | Delimita el bloque o expresión precedente. |
+| 24 | `data = new { nombre, apellidoPaterno = "Perez", apellidoMaterno = "Lopez", telefono = "5551234567", telefonoCelular = "+525551234568", email,` | Declaración o continuación del bloque documentado en el código. |
 | 25 | `telefonoContacto = "5551234569", nombreCompletoContacto = "Contacto Prueba", emailContacto = "contacto@example.test", calle = "Calle 1", colonia = "Centro", municipio = "Puebla", estado = "Puebla", codigoPostal = "01234" } // Contrato completo.` | Contrato completo. |
-| 26 | `};` | Cierra el bloque, inicialización o llamada precedente. |
-| 27 | `[Theory] // Asegura protección en ambos alias y verbos.` | Asegura protección en ambos alias y verbos. |
-| 28 | `[InlineData("GET", "/api/clientes")]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 29 | `[InlineData("POST", "/api/clientes")]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 30 | `[InlineData("GET", "/api/v1/clientes")]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 31 | `[InlineData("POST", "/api/v1/clientes")]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 32 | `public async Task SinTokenDevuelve401(string method, string path)` | Declara la operación, sus parámetros y tipo de resultado; el cuerpo documenta cada paso. |
-| 33 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 34 | `using var request = Request(new HttpMethod(method), path, body: method == "POST" ? Body() : null); // Sin credenciales.` | Sin credenciales. |
-| 35 | `using var response = await factory.Client.SendAsync(request); // Ejecuta pipeline.` | Ejecuta pipeline. |
-| 36 | `Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode); // No accede al caso de uso.` | No accede al caso de uso. |
-| 37 | `Assert.Equal(401, (await response.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("statusCode").GetInt32()); // Wrapper uniforme.` | Wrapper uniforme. |
-| 38 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 39 | `[Fact] // Token válido sin autorización.` | Token válido sin autorización. |
-| 40 | `public async Task SinPermisoDevuelve403()` | Declara la operación, sus parámetros y tipo de resultado; el cuerpo documenta cada paso. |
-| 41 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 42 | `using var request = Request(HttpMethod.Get, "/api/clientes", factory.Token(permission: false)); // Identidad sin permiso.` | Identidad sin permiso. |
-| 43 | `using var response = await factory.Client.SendAsync(request); // Autenticación real.` | Autenticación real. |
-| 44 | `Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode); // Política efectiva.` | Política efectiva. |
-| 45 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 46 | `[Theory] // Rechaza tokens inválidos criptográfica o semánticamente.` | Rechaza tokens inválidos criptográfica o semánticamente. |
-| 47 | `[InlineData(true, "taller-tests", false)]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 48 | `[InlineData(false, "otra-api", false)]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 49 | `[InlineData(false, "taller-tests", true)]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 50 | `public async Task TokenInvalidoDevuelve401(bool expired, string audience, bool badSignature)` | Declara la operación, sus parámetros y tipo de resultado; el cuerpo documenta cada paso. |
-| 51 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 52 | `using var request = Request(HttpMethod.Get, "/api/clientes", factory.Token(expired: expired, audience: audience, badSignature: badSignature)); // Construye caso negativo.` | Construye caso negativo. |
-| 53 | `using var response = await factory.Client.SendAsync(request); // Verifica el validador productivo.` | Verifica el validador productivo. |
-| 54 | `Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode); // Ningún token inválido entra.` | Ningún token inválido entra. |
-| 55 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 56 | `[Theory] // Límites y allowlist de orden.` | Límites y allowlist de orden. |
-| 57 | `[InlineData("pageNumber=0")]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 58 | `[InlineData("pageNumber=10001")]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 59 | `[InlineData("pageSize=101")]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 60 | `[InlineData("pageSize=-1")]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 61 | `[InlineData("sortDirection=drop")]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 62 | `public async Task QueryInvalidaDevuelve400(string query)` | Declara la operación, sus parámetros y tipo de resultado; el cuerpo documenta cada paso. |
-| 63 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 64 | `using var request = Request(HttpMethod.Get, "/api/clientes?" + query, factory.Token()); // Query inválida.` | Query inválida. |
-| 65 | `using var response = await factory.Client.SendAsync(request); // Model binding real.` | Model binding real. |
-| 66 | `Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode); // Rechaza antes de consultar.` | Rechaza antes de consultar. |
-| 67 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 68 | `[Fact] // Valida objetos anidados.` | Valida objetos anidados. |
-| 69 | `public async Task EmailInvalidoDevuelve400()` | Declara la operación, sus parámetros y tipo de resultado; el cuerpo documenta cada paso. |
-| 70 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 71 | `using var request = Request(HttpMethod.Post, "/api/clientes", factory.Token(), Body(email: "invalido")); // Formato incorrecto.` | Formato incorrecto. |
-| 72 | `using var response = await factory.Client.SendAsync(request); // Validación del DTO interno.` | Validación del DTO interno. |
-| 73 | `Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode); // No persiste.` | No persiste. |
-| 74 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 75 | `[Theory] // Cuerpos ausentes, vacíos y malformados.` | Cuerpos ausentes, vacíos y malformados. |
-| 76 | `[InlineData("{}")]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 77 | `[InlineData("{\"data\":null}")]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 78 | `[InlineData("{\"data\":{}}")]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 79 | `[InlineData("{no-json")]` | Continúa la expresión o declaración precedente; su comportamiento se documenta en el bloque y comentarios asociados. |
-| 80 | `public async Task CuerpoInvalidoDevuelve400(string body)` | Declara la operación, sus parámetros y tipo de resultado; el cuerpo documenta cada paso. |
-| 81 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 82 | `using var request = Request(HttpMethod.Post, "/api/clientes", factory.Token()); // Token autorizado.` | Token autorizado. |
-| 83 | `request.Content = new StringContent(body, Encoding.UTF8, "application/json"); // Conserva cuerpo inválido.` | Conserva cuerpo inválido. |
-| 84 | `using var response = await factory.Client.SendAsync(request); // Deserialización real.` | Deserialización real. |
-| 85 | `Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode); // No produce un 500.` | No produce un 500. |
-| 86 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 87 | `[Fact] // Flujo funcional persistido y ordenado.` | Flujo funcional persistido y ordenado. |
-| 88 | `public async Task RegistroConsultaOrdenYPaginacion()` | Declara la operación, sus parámetros y tipo de resultado; el cuerpo documenta cada paso. |
-| 89 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 90 | `foreach (var nombre in new[] { "Zoe", "Ana", "Ana", "Luis" }) // Incluye empate por nombre.` | Incluye empate por nombre. |
-| 91 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 92 | `using var request = Request(HttpMethod.Post, "/api/clientes", factory.Token(), Body(nombre)); // Alta real.` | Alta real. |
-| 93 | `using var response = await factory.Client.SendAsync(request); // Guarda en SQL Server.` | Guarda en SQL Server. |
-| 94 | `Assert.Equal(HttpStatusCode.Created, response.StatusCode); // Confirma creación.` | Confirma creación. |
-| 95 | `var json = await response.Content.ReadFromJsonAsync<JsonElement>(); // Inspecciona DTO.` | Inspecciona DTO. |
-| 96 | `Assert.Equal(nombre, json.GetProperty("data").GetProperty("nombre").GetString()); // Mantiene datos.` | Mantiene datos. |
-| 97 | `Assert.Equal("01234", json.GetProperty("data").GetProperty("codigoPostal").GetString()); // Preserva cero inicial.` | Preserva cero inicial. |
-| 98 | `Assert.True(response.Headers.Contains("X-Correlation-ID")); // Trazabilidad.` | Trazabilidad. |
-| 99 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 100 | `var ids = new List<string>(); // Acumula páginas para detectar solapamientos.` | Acumula páginas para detectar solapamientos. |
-| 101 | `foreach (var page in new[] { 1, 2 }) // Recorre dos páginas consecutivas.` | Recorre dos páginas consecutivas. |
-| 102 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 103 | `using var request = Request(HttpMethod.Get, $"/api/v1/clientes?pageNumber={page}&pageSize=2&sortDirection=asc", factory.Token()); // Alias versionado.` | Alias versionado. |
-| 104 | `using var response = await factory.Client.SendAsync(request); // Consulta SQL paginada.` | Consulta SQL paginada. |
-| 105 | `Assert.Equal(HttpStatusCode.OK, response.StatusCode); // Éxito.` | Éxito. |
-| 106 | `var data = (await response.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("data"); // Sobre paginado.` | Sobre paginado. |
-| 107 | `Assert.Equal(4, data.GetProperty("totalCount").GetInt32()); // Conteo persistido.` | Conteo persistido. |
-| 108 | `Assert.Equal(2, data.GetProperty("totalPages").GetInt32()); // Metadatos correctos.` | Metadatos correctos. |
-| 109 | `ids.AddRange(data.GetProperty("items").EnumerateArray().Select(x => x.GetProperty("id").GetString()!)); // Identificadores por página.` | Identificadores por página. |
-| 110 | `Assert.Equal(page == 1 ? "Ana" : "Luis", data.GetProperty("items")[0].GetProperty("nombre").GetString()); // Orden esperado.` | Orden esperado. |
-| 111 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 112 | `Assert.Equal(4, ids.Distinct().Count()); // Sin duplicados entre páginas estables.` | Sin duplicados entre páginas estables. |
-| 113 | `using var descending = Request(HttpMethod.Get, "/api/clientes?pageSize=4&sortDirection=desc", factory.Token()); // Invierte todo el orden.` | Invierte todo el orden. |
-| 114 | `using var descendingResponse = await factory.Client.SendAsync(descending); // Consulta inversa.` | Consulta inversa. |
-| 115 | `var reverse = (await descendingResponse.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("data").GetProperty("items"); // Resultado descendente.` | Resultado descendente. |
-| 116 | `Assert.Equal(ids.AsEnumerable().Reverse(), reverse.EnumerateArray().Select(x => x.GetProperty("id").GetString()!)); // Comprueba desempate inverso.` | Comprueba desempate inverso. |
-| 117 | `using var beyond = Request(HttpMethod.Get, "/api/clientes?pageNumber=100", factory.Token()); // Página sin filas.` | Página sin filas. |
-| 118 | `using var beyondResponse = await factory.Client.SendAsync(beyond); // Debe ser éxito vacío.` | Debe ser éxito vacío. |
-| 119 | `Assert.Empty((await beyondResponse.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("data").GetProperty("items").EnumerateArray()); // Nunca 404 por página vacía.` | Nunca 404 por página vacía. |
-| 120 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 121 | `[Fact] // Verifica exposición y documentación.` | Verifica exposición y documentación. |
-| 122 | `public async Task OpenApiDocumentaLosDosAlias()` | Declara la operación, sus parámetros y tipo de resultado; el cuerpo documenta cada paso. |
-| 123 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 124 | `var document = await factory.Client.GetFromJsonAsync<JsonElement>("/openapi/v1.json"); // Documento generado.` | Documento generado. |
-| 125 | `foreach (var path in new[] { "/api/clientes", "/api/v1/clientes" }) // Dos rutas compatibles.` | Dos rutas compatibles. |
-| 126 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 127 | `var item = document.GetProperty("paths").GetProperty(path); // Operaciones publicadas.` | Operaciones publicadas. |
-| 128 | `Assert.True(item.TryGetProperty("get", out _)); // Consulta documentada.` | Consulta documentada. |
-| 129 | `Assert.True(item.TryGetProperty("post", out _)); // Alta documentada.` | Alta documentada. |
-| 130 | `Assert.True(item.GetProperty("get").TryGetProperty("security", out _)); // Bearer documentado.` | Bearer documentado. |
-| 131 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 132 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 133 | `[Fact] // Un formato distinto de JSON conserva el sobre de error.` | Un formato distinto de JSON conserva el sobre de error. |
-| 134 | `public async Task FormatoNoSoportadoDevuelve415()` | Declara la operación, sus parámetros y tipo de resultado; el cuerpo documenta cada paso. |
-| 135 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 136 | `using var request = Request(HttpMethod.Post, "/api/clientes", factory.Token()); // Usuario autorizado.` | Usuario autorizado. |
-| 137 | `request.Content = new StringContent("texto", Encoding.UTF8, "text/plain"); // Formato no soportado.` | Formato no soportado. |
-| 138 | `using var response = await factory.Client.SendAsync(request); // Ejecuta selección del formatter.` | Ejecuta selección del formatter. |
-| 139 | `Assert.Equal(HttpStatusCode.UnsupportedMediaType, response.StatusCode); // HTTP 415.` | HTTP 415. |
-| 140 | `Assert.Equal(415, (await response.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("statusCode").GetInt32()); // Sobre consistente.` | Sobre consistente. |
-| 141 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 142 | `[Fact] // Prueba manejo de fallos sin alterar la base real del fixture.` | Prueba manejo de fallos sin alterar la base real del fixture. |
-| 143 | `public async Task FalloInternoNoExponeDetalles()` | Declara la operación, sus parámetros y tipo de resultado; el cuerpo documenta cada paso. |
-| 144 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 145 | `await using var failing = factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services => services.AddScoped<IClienteRepository, FailingRepository>())); // Puerto fallido solo en este host.` | Puerto fallido solo en este host. |
-| 146 | `using var client = failing.CreateClient(new() { BaseAddress = new Uri("https://localhost") }); // Host independiente.` | Host independiente. |
-| 147 | `using var request = Request(HttpMethod.Get, "/api/clientes", factory.Token()); // Token válido.` | Token válido. |
-| 148 | `using var response = await client.SendAsync(request); // Provoca fallo tras autorización.` | Provoca fallo tras autorización. |
-| 149 | `Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode); // HTTP 500.` | HTTP 500. |
-| 150 | `Assert.DoesNotContain("dato-secreto", await response.Content.ReadAsStringAsync()); // Sanitización observable.` | Sanitización observable. |
-| 151 | `Assert.Equal(500, (await response.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("statusCode").GetInt32()); // Wrapper correcto.` | Wrapper correcto. |
-| 152 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 153 | `[Fact] // Límite activo incluso para solicitudes sin token.` | Límite activo incluso para solicitudes sin token. |
-| 154 | `public async Task SaturacionDevuelve429()` | Declara la operación, sus parámetros y tipo de resultado; el cuerpo documenta cada paso. |
-| 155 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 156 | `await using var isolated = factory.WithWebHostBuilder(_ => { }); // Presupuesto separado del resto de pruebas.` | Presupuesto separado del resto de pruebas. |
-| 157 | `using var client = isolated.CreateClient(new() { BaseAddress = new Uri("https://localhost") }); // Solicitudes HTTPS.` | Solicitudes HTTPS. |
-| 158 | `for (var index = 0; index <= 600; index++) // Supera la ventana sin tocar SQL.` | Supera la ventana sin tocar SQL. |
-| 159 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 160 | `using var response = await client.GetAsync("/api/clientes"); // Solicitud anónima contabilizada.` | Solicitud anónima contabilizada. |
-| 161 | `if (index == 600) // Primera solicitud fuera del presupuesto.` | Primera solicitud fuera del presupuesto. |
-| 162 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 163 | `Assert.Equal((HttpStatusCode)429, response.StatusCode); // Protección efectiva.` | Protección efectiva. |
-| 164 | `Assert.Equal(429, (await response.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("statusCode").GetInt32()); // Sobre uniforme.` | Sobre uniforme. |
-| 165 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 166 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 167 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 168 | `private sealed class FailingRepository : IClienteRepository // Adaptador negativo exclusivo de pruebas.` | Adaptador negativo exclusivo de pruebas. |
-| 169 | `{` | Abre el bloque de definición o inicialización precedente. |
-| 170 | `public Task<PagedResponse<ClienteDto>> ListAsync(ClientesQuery query, CancellationToken cancellationToken) => throw new InvalidOperationException("dato-secreto"); // Simula detalle sensible.` | Simula detalle sensible. |
-| 171 | `public Task AddAsync(Cliente cliente, CancellationToken cancellationToken) => throw new InvalidOperationException("dato-secreto"); // Nunca ejecuta SQL.` | Nunca ejecuta SQL. |
-| 172 | `}` | Cierra el bloque, inicialización o llamada precedente. |
-| 173 | `}` | Cierra el bloque, inicialización o llamada precedente. |
+| 26 | `};` | Delimita el bloque o expresión precedente. |
+| 27 | `[Theory] // Asegura protección en ambos verbos versionados.` | Asegura protección en ambos verbos versionados. |
+| 28 | `[InlineData("GET", "/api/v1/clientes")]` | Declaración o continuación del bloque documentado en el código. |
+| 29 | `[InlineData("POST", "/api/v1/clientes")]` | Declaración o continuación del bloque documentado en el código. |
+| 30 | `public async Task SinTokenDevuelve401(string method, string path)` | Declaración o continuación del bloque documentado en el código. |
+| 31 | `{` | Delimita el bloque o expresión precedente. |
+| 32 | `using var request = Request(new HttpMethod(method), path, body: method == "POST" ? Body() : null); // Sin credenciales.` | Sin credenciales. |
+| 33 | `using var response = await factory.Client.SendAsync(request); // Ejecuta pipeline.` | Ejecuta pipeline. |
+| 34 | `Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode); // No accede al caso de uso.` | No accede al caso de uso. |
+| 35 | `Assert.Equal(401, (await response.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("statusCode").GetInt32()); // Wrapper uniforme.` | Wrapper uniforme. |
+| 36 | `}` | Delimita el bloque o expresión precedente. |
+| 37 | `[Fact] // Token válido sin autorización.` | Token válido sin autorización. |
+| 38 | `public async Task SinPermisoDevuelve403()` | Declaración o continuación del bloque documentado en el código. |
+| 39 | `{` | Delimita el bloque o expresión precedente. |
+| 40 | `using var request = Request(HttpMethod.Get, "/api/v1/clientes", factory.Token(permission: false)); // Identidad sin permiso.` | Identidad sin permiso. |
+| 41 | `using var response = await factory.Client.SendAsync(request); // Autenticación real.` | Autenticación real. |
+| 42 | `Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode); // Política efectiva.` | Política efectiva. |
+| 43 | `}` | Delimita el bloque o expresión precedente. |
+| 44 | `[Theory] // Rechaza tokens inválidos criptográfica o semánticamente.` | Rechaza tokens inválidos criptográfica o semánticamente. |
+| 45 | `[InlineData(true, "taller-tests", false)]` | Declaración o continuación del bloque documentado en el código. |
+| 46 | `[InlineData(false, "otra-api", false)]` | Declaración o continuación del bloque documentado en el código. |
+| 47 | `[InlineData(false, "taller-tests", true)]` | Declaración o continuación del bloque documentado en el código. |
+| 48 | `public async Task TokenInvalidoDevuelve401(bool expired, string audience, bool badSignature)` | Declaración o continuación del bloque documentado en el código. |
+| 49 | `{` | Delimita el bloque o expresión precedente. |
+| 50 | `using var request = Request(HttpMethod.Get, "/api/v1/clientes", factory.Token(expired: expired, audience: audience, badSignature: badSignature)); // Construye caso negativo.` | Construye caso negativo. |
+| 51 | `using var response = await factory.Client.SendAsync(request); // Verifica el validador productivo.` | Verifica el validador productivo. |
+| 52 | `Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode); // Ningún token inválido entra.` | Ningún token inválido entra. |
+| 53 | `}` | Delimita el bloque o expresión precedente. |
+| 54 | `[Theory] // Límites y allowlist de orden.` | Límites y allowlist de orden. |
+| 55 | `[InlineData("pageNumber=0")]` | Declaración o continuación del bloque documentado en el código. |
+| 56 | `[InlineData("pageNumber=10001")]` | Declaración o continuación del bloque documentado en el código. |
+| 57 | `[InlineData("pageSize=101")]` | Declaración o continuación del bloque documentado en el código. |
+| 58 | `[InlineData("pageSize=-1")]` | Declaración o continuación del bloque documentado en el código. |
+| 59 | `[InlineData("sortDirection=drop")]` | Declaración o continuación del bloque documentado en el código. |
+| 60 | `public async Task QueryInvalidaDevuelve400(string query)` | Declaración o continuación del bloque documentado en el código. |
+| 61 | `{` | Delimita el bloque o expresión precedente. |
+| 62 | `using var request = Request(HttpMethod.Get, "/api/v1/clientes?" + query, factory.Token()); // Query inválida.` | Query inválida. |
+| 63 | `using var response = await factory.Client.SendAsync(request); // Model binding real.` | Model binding real. |
+| 64 | `Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode); // Rechaza antes de consultar.` | Rechaza antes de consultar. |
+| 65 | `}` | Delimita el bloque o expresión precedente. |
+| 66 | `[Fact] // Valida objetos anidados.` | Valida objetos anidados. |
+| 67 | `public async Task EmailInvalidoDevuelve400()` | Declaración o continuación del bloque documentado en el código. |
+| 68 | `{` | Delimita el bloque o expresión precedente. |
+| 69 | `using var request = Request(HttpMethod.Post, "/api/v1/clientes", factory.Token(), Body(email: "invalido")); // Formato incorrecto.` | Formato incorrecto. |
+| 70 | `using var response = await factory.Client.SendAsync(request); // Validación del DTO interno.` | Validación del DTO interno. |
+| 71 | `Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode); // No persiste.` | No persiste. |
+| 72 | `}` | Delimita el bloque o expresión precedente. |
+| 73 | `[Theory] // Cuerpos ausentes, vacíos y malformados.` | Cuerpos ausentes, vacíos y malformados. |
+| 74 | `[InlineData("{}")]` | Declaración o continuación del bloque documentado en el código. |
+| 75 | `[InlineData("{\"data\":null}")]` | Declaración o continuación del bloque documentado en el código. |
+| 76 | `[InlineData("{\"data\":{}}")]` | Declaración o continuación del bloque documentado en el código. |
+| 77 | `[InlineData("{no-json")]` | Declaración o continuación del bloque documentado en el código. |
+| 78 | `public async Task CuerpoInvalidoDevuelve400(string body)` | Declaración o continuación del bloque documentado en el código. |
+| 79 | `{` | Delimita el bloque o expresión precedente. |
+| 80 | `using var request = Request(HttpMethod.Post, "/api/v1/clientes", factory.Token()); // Token autorizado.` | Token autorizado. |
+| 81 | `request.Content = new StringContent(body, Encoding.UTF8, "application/json"); // Conserva cuerpo inválido.` | Conserva cuerpo inválido. |
+| 82 | `using var response = await factory.Client.SendAsync(request); // Deserialización real.` | Deserialización real. |
+| 83 | `Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode); // No produce un 500.` | No produce un 500. |
+| 84 | `}` | Delimita el bloque o expresión precedente. |
+| 85 | `[Fact] // Flujo funcional persistido y ordenado.` | Flujo funcional persistido y ordenado. |
+| 86 | `public async Task RegistroConsultaOrdenYPaginacion()` | Declaración o continuación del bloque documentado en el código. |
+| 87 | `{` | Delimita el bloque o expresión precedente. |
+| 88 | `foreach (var nombre in new[] { "Zoe", "Ana", "Ana", "Luis" }) // Incluye empate por nombre.` | Incluye empate por nombre. |
+| 89 | `{` | Delimita el bloque o expresión precedente. |
+| 90 | `using var request = Request(HttpMethod.Post, "/api/v1/clientes", factory.Token(), Body(nombre)); // Alta real.` | Alta real. |
+| 91 | `using var response = await factory.Client.SendAsync(request); // Guarda en SQL Server.` | Guarda en SQL Server. |
+| 92 | `Assert.Equal(HttpStatusCode.Created, response.StatusCode); // Confirma creación.` | Confirma creación. |
+| 93 | `var json = await response.Content.ReadFromJsonAsync<JsonElement>(); // Inspecciona DTO.` | Inspecciona DTO. |
+| 94 | `Assert.Equal(nombre, json.GetProperty("data").GetProperty("nombre").GetString()); // Mantiene datos.` | Mantiene datos. |
+| 95 | `Assert.Equal("01234", json.GetProperty("data").GetProperty("codigoPostal").GetString()); // Preserva cero inicial.` | Preserva cero inicial. |
+| 96 | `Assert.True(response.Headers.Contains("X-Correlation-ID")); // Trazabilidad.` | Trazabilidad. |
+| 97 | `}` | Delimita el bloque o expresión precedente. |
+| 98 | `var ids = new List<string>(); // Acumula páginas para detectar solapamientos.` | Acumula páginas para detectar solapamientos. |
+| 99 | `foreach (var page in new[] { 1, 2 }) // Recorre dos páginas consecutivas.` | Recorre dos páginas consecutivas. |
+| 100 | `{` | Delimita el bloque o expresión precedente. |
+| 101 | `using var request = Request(HttpMethod.Get, $"/api/v1/clientes?pageNumber={page}&pageSize=2&sortDirection=asc", factory.Token()); // Ruta versionada.` | Ruta versionada. |
+| 102 | `using var response = await factory.Client.SendAsync(request); // Consulta SQL paginada.` | Consulta SQL paginada. |
+| 103 | `Assert.Equal(HttpStatusCode.OK, response.StatusCode); // Éxito.` | Éxito. |
+| 104 | `var data = (await response.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("data"); // Sobre paginado.` | Sobre paginado. |
+| 105 | `Assert.Equal(4, data.GetProperty("totalCount").GetInt32()); // Conteo persistido.` | Conteo persistido. |
+| 106 | `Assert.Equal(2, data.GetProperty("totalPages").GetInt32()); // Metadatos correctos.` | Metadatos correctos. |
+| 107 | `ids.AddRange(data.GetProperty("items").EnumerateArray().Select(x => x.GetProperty("id").GetString()!)); // Identificadores por página.` | Identificadores por página. |
+| 108 | `Assert.Equal(page == 1 ? "Ana" : "Luis", data.GetProperty("items")[0].GetProperty("nombre").GetString()); // Orden esperado.` | Orden esperado. |
+| 109 | `}` | Delimita el bloque o expresión precedente. |
+| 110 | `Assert.Equal(4, ids.Distinct().Count()); // Sin duplicados entre páginas estables.` | Sin duplicados entre páginas estables. |
+| 111 | `using var descending = Request(HttpMethod.Get, "/api/v1/clientes?pageSize=4&sortDirection=desc", factory.Token()); // Invierte todo el orden.` | Invierte todo el orden. |
+| 112 | `using var descendingResponse = await factory.Client.SendAsync(descending); // Consulta inversa.` | Consulta inversa. |
+| 113 | `var reverse = (await descendingResponse.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("data").GetProperty("items"); // Resultado descendente.` | Resultado descendente. |
+| 114 | `Assert.Equal(ids.AsEnumerable().Reverse(), reverse.EnumerateArray().Select(x => x.GetProperty("id").GetString()!)); // Comprueba desempate inverso.` | Comprueba desempate inverso. |
+| 115 | `using var beyond = Request(HttpMethod.Get, "/api/v1/clientes?pageNumber=100", factory.Token()); // Página sin filas.` | Página sin filas. |
+| 116 | `using var beyondResponse = await factory.Client.SendAsync(beyond); // Debe ser éxito vacío.` | Debe ser éxito vacío. |
+| 117 | `Assert.Empty((await beyondResponse.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("data").GetProperty("items").EnumerateArray()); // Nunca 404 por página vacía.` | Nunca 404 por página vacía. |
+| 118 | `}` | Delimita el bloque o expresión precedente. |
+| 119 | `[Fact] // Verifica exposición y documentación.` | Verifica exposición y documentación. |
+| 120 | `public async Task OpenApiDocumentaSoloVersionUno()` | Declaración o continuación del bloque documentado en el código. |
+| 121 | `{` | Delimita el bloque o expresión precedente. |
+| 122 | `var document = await factory.Client.GetFromJsonAsync<JsonElement>("/openapi/v1.json"); // Documento generado.` | Documento generado. |
+| 123 | `Assert.Single(document.GetProperty("paths").EnumerateObject()); // No publica alias sin versión.` | No publica alias sin versión. |
+| 124 | `foreach (var path in new[] { "/api/v1/clientes" }) // Única versión implementada.` | Única versión implementada. |
+| 125 | `{` | Delimita el bloque o expresión precedente. |
+| 126 | `var item = document.GetProperty("paths").GetProperty(path); // Operaciones publicadas.` | Operaciones publicadas. |
+| 127 | `Assert.True(item.TryGetProperty("get", out _)); // Consulta documentada.` | Consulta documentada. |
+| 128 | `Assert.True(item.TryGetProperty("post", out _)); // Alta documentada.` | Alta documentada. |
+| 129 | `Assert.True(item.GetProperty("get").TryGetProperty("security", out _)); // Bearer documentado.` | Bearer documentado. |
+| 130 | `}` | Delimita el bloque o expresión precedente. |
+| 131 | `}` | Delimita el bloque o expresión precedente. |
+| 132 | `[Fact] // Un formato distinto de JSON conserva el sobre de error.` | Un formato distinto de JSON conserva el sobre de error. |
+| 133 | `public async Task FormatoNoSoportadoDevuelve415()` | Declaración o continuación del bloque documentado en el código. |
+| 134 | `{` | Delimita el bloque o expresión precedente. |
+| 135 | `using var request = Request(HttpMethod.Post, "/api/v1/clientes", factory.Token()); // Usuario autorizado.` | Usuario autorizado. |
+| 136 | `request.Content = new StringContent("texto", Encoding.UTF8, "text/plain"); // Formato no soportado.` | Formato no soportado. |
+| 137 | `using var response = await factory.Client.SendAsync(request); // Ejecuta selección del formatter.` | Ejecuta selección del formatter. |
+| 138 | `Assert.Equal(HttpStatusCode.UnsupportedMediaType, response.StatusCode); // HTTP 415.` | HTTP 415. |
+| 139 | `Assert.Equal(415, (await response.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("statusCode").GetInt32()); // Sobre consistente.` | Sobre consistente. |
+| 140 | `}` | Delimita el bloque o expresión precedente. |
+| 141 | `[Fact] // Prueba manejo de fallos sin alterar la base real del fixture.` | Prueba manejo de fallos sin alterar la base real del fixture. |
+| 142 | `public async Task FalloInternoNoExponeDetalles()` | Declaración o continuación del bloque documentado en el código. |
+| 143 | `{` | Delimita el bloque o expresión precedente. |
+| 144 | `await using var failing = factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services => services.AddScoped<IClienteRepository, FailingRepository>())); // Puerto fallido solo en este host.` | Puerto fallido solo en este host. |
+| 145 | `using var client = failing.CreateClient(new() { BaseAddress = new Uri("https://localhost") }); // Host independiente.` | Host independiente. |
+| 146 | `using var request = Request(HttpMethod.Get, "/api/v1/clientes", factory.Token()); // Token válido.` | Token válido. |
+| 147 | `using var response = await client.SendAsync(request); // Provoca fallo tras autorización.` | Provoca fallo tras autorización. |
+| 148 | `Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode); // HTTP 500.` | HTTP 500. |
+| 149 | `Assert.DoesNotContain("dato-secreto", await response.Content.ReadAsStringAsync()); // Sanitización observable.` | Sanitización observable. |
+| 150 | `Assert.Equal(500, (await response.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("statusCode").GetInt32()); // Wrapper correcto.` | Wrapper correcto. |
+| 151 | `}` | Delimita el bloque o expresión precedente. |
+| 152 | `[Fact] // Límite activo incluso para solicitudes sin token.` | Límite activo incluso para solicitudes sin token. |
+| 153 | `public async Task SaturacionDevuelve429()` | Declaración o continuación del bloque documentado en el código. |
+| 154 | `{` | Delimita el bloque o expresión precedente. |
+| 155 | `await using var isolated = factory.WithWebHostBuilder(_ => { }); // Presupuesto separado del resto de pruebas.` | Presupuesto separado del resto de pruebas. |
+| 156 | `using var client = isolated.CreateClient(new() { BaseAddress = new Uri("https://localhost") }); // Solicitudes HTTPS.` | Solicitudes HTTPS. |
+| 157 | `for (var index = 0; index <= 600; index++) // Supera la ventana sin tocar SQL.` | Supera la ventana sin tocar SQL. |
+| 158 | `{` | Delimita el bloque o expresión precedente. |
+| 159 | `using var response = await client.GetAsync("/api/v1/clientes"); // Solicitud anónima contabilizada.` | Solicitud anónima contabilizada. |
+| 160 | `if (index == 600) // Primera solicitud fuera del presupuesto.` | Primera solicitud fuera del presupuesto. |
+| 161 | `{` | Delimita el bloque o expresión precedente. |
+| 162 | `Assert.Equal((HttpStatusCode)429, response.StatusCode); // Protección efectiva.` | Protección efectiva. |
+| 163 | `Assert.Equal(429, (await response.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("statusCode").GetInt32()); // Sobre uniforme.` | Sobre uniforme. |
+| 164 | `}` | Delimita el bloque o expresión precedente. |
+| 165 | `}` | Delimita el bloque o expresión precedente. |
+| 166 | `}` | Delimita el bloque o expresión precedente. |
+| 167 | `[Theory] // Verifica que rutas inexistentes no se confundan con consultas vacías.` | Verifica que rutas inexistentes no se confundan con consultas vacías. |
+| 168 | `[InlineData("/api/clientes")]` | Declaración o continuación del bloque documentado en el código. |
+| 169 | `[InlineData("/api/v2/clientes")]` | Declaración o continuación del bloque documentado en el código. |
+| 170 | `public async Task RutaNoPublicadaDevuelve404(string path)` | Declaración o continuación del bloque documentado en el código. |
+| 171 | `{` | Delimita el bloque o expresión precedente. |
+| 172 | `using var response = await factory.Client.GetAsync(path); // No coincide con ningún controlador.` | No coincide con ningún controlador. |
+| 173 | `Assert.Equal(HttpStatusCode.NotFound, response.StatusCode); // Conserva semántica HTTP.` | Conserva semántica HTTP. |
+| 174 | `var body = await response.Content.ReadFromJsonAsync<JsonElement>(); // Sobre del middleware.` | Sobre del middleware. |
+| 175 | `Assert.Equal(404, body.GetProperty("statusCode").GetInt32()); // Estado consistente.` | Estado consistente. |
+| 176 | `Assert.Contains("Ruta no encontrada", body.GetProperty("message").GetString()); // Diagnóstico específico.` | Diagnóstico específico. |
+| 177 | `}` | Delimita el bloque o expresión precedente. |
+| 178 | `[Fact] // Comprueba raíz, interfaz y configuración del documento consumido.` | Comprueba raíz, interfaz y configuración del documento consumido. |
+| 179 | `public async Task InicioRedirigeASwaggerYLaInterfazCarga()` | Declaración o continuación del bloque documentado en el código. |
+| 180 | `{` | Delimita el bloque o expresión precedente. |
+| 181 | `using var root = await factory.Client.GetAsync("/"); // El cliente de pruebas no sigue redirecciones.` | El cliente de pruebas no sigue redirecciones. |
+| 182 | `Assert.Equal(HttpStatusCode.Redirect, root.StatusCode); // Ya no devuelve 404 en desarrollo.` | Ya no devuelve 404 en desarrollo. |
+| 183 | `Assert.Equal("swagger/index.html", root.Headers.Location?.OriginalString); // Destino relativo correcto.` | Destino relativo correcto. |
+| 184 | `using var ui = await factory.Client.GetAsync("/swagger/index.html"); // HTML integrado de Swagger UI.` | HTML integrado de Swagger UI. |
+| 185 | `Assert.Equal(HttpStatusCode.OK, ui.StatusCode); // Documentación accesible.` | Documentación accesible. |
+| 186 | `Assert.Equal("text/html", ui.Content.Headers.ContentType?.MediaType); // No es un wrapper JSON.` | No es un wrapper JSON. |
+| 187 | `var initializer = await factory.Client.GetStringAsync("/swagger/index.js"); // Configuración usada por el navegador.` | Configuración usada por el navegador. |
+| 188 | `Assert.Contains("../openapi/v1.json", initializer); // Consume el documento real publicado.` | Consume el documento real publicado. |
+| 189 | `using var asset = await factory.Client.GetAsync("/swagger/swagger-ui-bundle.js"); // Dependencia requerida por la interfaz.` | Dependencia requerida por la interfaz. |
+| 190 | `Assert.Equal(HttpStatusCode.OK, asset.StatusCode); // Assets servidos sin CDN externo.` | Assets servidos sin CDN externo. |
+| 191 | `}` | Delimita el bloque o expresión precedente. |
+| 192 | `private sealed class FailingRepository : IClienteRepository // Adaptador negativo exclusivo de pruebas.` | Adaptador negativo exclusivo de pruebas. |
+| 193 | `{` | Delimita el bloque o expresión precedente. |
+| 194 | `public Task<PagedResponse<ClienteDto>> ListAsync(ClientesQuery query, CancellationToken cancellationToken) => throw new InvalidOperationException("dato-secreto"); // Simula detalle sensible.` | Simula detalle sensible. |
+| 195 | `public Task AddAsync(Cliente cliente, CancellationToken cancellationToken) => throw new InvalidOperationException("dato-secreto"); // Nunca ejecuta SQL.` | Nunca ejecuta SQL. |
+| 196 | `}` | Delimita el bloque o expresión precedente. |
+| 197 | `}` | Delimita el bloque o expresión precedente. |

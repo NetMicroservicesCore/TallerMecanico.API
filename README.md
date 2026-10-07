@@ -21,7 +21,7 @@ dotnet test Taller.Tests/Taller.Tests.csproj -m:1
 dotnet run --project API.Principal --launch-profile https
 ```
 
-El certificado HTTPS de desarrollo debe estar confiado en el equipo. OpenAPI: `https://localhost:7230/openapi/v1.json`. La migración crea `TallerMecanicoDev` en LocalDB; el inicio de la API nunca modifica el esquema. Las pruebas crean y eliminan únicamente una base `TallerTests_<uuid>` independiente.
+El certificado HTTPS de desarrollo debe estar confiado en el equipo. Swagger UI: `https://localhost:7230/swagger/index.html`. OpenAPI: `https://localhost:7230/openapi/v1.json`. En Development, `/` redirige a Swagger. La migración crea `TallerMecanicoDev` en LocalDB; el inicio de la API nunca modifica el esquema. Las pruebas crean y eliminan únicamente una base `TallerTests_<uuid>` independiente.
 
 **Autenticación:** la URL `https://identity.example.invalid` es un marcador no funcional. Configura tu emisor OIDC y audiencia mediante variables de entorno o user-secrets antes de enviar un token real:
 
@@ -38,10 +38,10 @@ El emisor debe incluir `permission` con valor `clientes.manage` en el access tok
 
 | Método | Ruta | Resultado |
 |---|---|---|
-| GET | `/api/clientes?pageNumber=1&pageSize=20&sortDirection=asc` | 200, página de clientes |
-| POST | `/api/clientes` | 201, cliente persistido |
+| GET | `/api/v1/clientes?pageNumber=1&pageSize=20&sortDirection=asc` | 200, página de clientes |
+| POST | `/api/v1/clientes` | 201, cliente persistido |
 
-También están publicados en `/api/v1/clientes`. `sortDirection` acepta exactamente `asc` o `desc`; `pageNumber` va de 1 a 10000 y `pageSize` de 1 a 100. Ambos endpoints exigen autorización.
+La versión es obligatoria: `/api/clientes` y `/api/v2/clientes` devuelven 404. `sortDirection` acepta exactamente `asc` o `desc`; `pageNumber` va de 1 a 10000 y `pageSize` de 1 a 100. Ambos endpoints exigen autorización.
 
 Entrada POST: `{ "data": { ...campos del cliente... } }`. Salida: `{ "statusCode": 201, "message": "Cliente registrado.", "data": { ...cliente... } }`. GET devuelve en `data`: `items`, `pageNumber`, `pageSize`, `totalCount`, `totalPages`, `hasNextPage`, `hasPreviousPage`. Los errores usan el mismo sobre, salvo rechazos del servidor/proxy anteriores al pipeline de aplicación.
 

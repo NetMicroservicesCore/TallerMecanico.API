@@ -24,9 +24,7 @@ public sealed class ClientesTests(ClientesFactory factory) : IClassFixture<Clien
         data = new { nombre, apellidoPaterno = "Perez", apellidoMaterno = "Lopez", telefono = "5551234567", telefonoCelular = "+525551234568", email,
             telefonoContacto = "5551234569", nombreCompletoContacto = "Contacto Prueba", emailContacto = "contacto@example.test", calle = "Calle 1", colonia = "Centro", municipio = "Puebla", estado = "Puebla", codigoPostal = "01234" } // Contrato completo.
     };
-    [Theory] // Asegura protección en ambos alias y verbos.
-    [InlineData("GET", "/api/clientes")]
-    [InlineData("POST", "/api/clientes")]
+    [Theory] // Asegura protección en ambos verbos versionados.
     [InlineData("GET", "/api/v1/clientes")]
     [InlineData("POST", "/api/v1/clientes")]
     public async Task SinTokenDevuelve401(string method, string path)
@@ -39,7 +37,7 @@ public sealed class ClientesTests(ClientesFactory factory) : IClassFixture<Clien
     [Fact] // Token válido sin autorización.
     public async Task SinPermisoDevuelve403()
     {
-        using var request = Request(HttpMethod.Get, "/api/clientes", factory.Token(permission: false)); // Identidad sin permiso.
+        using var request = Request(HttpMethod.Get, "/api/v1/clientes", factory.Token(permission: false)); // Identidad sin permiso.
         using var response = await factory.Client.SendAsync(request); // Autenticación real.
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode); // Política efectiva.
     }
@@ -49,7 +47,7 @@ public sealed class ClientesTests(ClientesFactory factory) : IClassFixture<Clien
     [InlineData(false, "taller-tests", true)]
     public async Task TokenInvalidoDevuelve401(bool expired, string audience, bool badSignature)
     {
-        using var request = Request(HttpMethod.Get, "/api/clientes", factory.Token(expired: expired, audience: audience, badSignature: badSignature)); // Construye caso negativo.
+        using var request = Request(HttpMethod.Get, "/api/v1/clientes", factory.Token(expired: expired, audience: audience, badSignature: badSignature)); // Construye caso negativo.
         using var response = await factory.Client.SendAsync(request); // Verifica el validador productivo.
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode); // Ningún token inválido entra.
     }
@@ -61,14 +59,14 @@ public sealed class ClientesTests(ClientesFactory factory) : IClassFixture<Clien
     [InlineData("sortDirection=drop")]
     public async Task QueryInvalidaDevuelve400(string query)
     {
-        using var request = Request(HttpMethod.Get, "/api/clientes?" + query, factory.Token()); // Query inválida.
+        using var request = Request(HttpMethod.Get, "/api/v1/clientes?" + query, factory.Token()); // Query inválida.
         using var response = await factory.Client.SendAsync(request); // Model binding real.
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode); // Rechaza antes de consultar.
     }
     [Fact] // Valida objetos anidados.
     public async Task EmailInvalidoDevuelve400()
     {
-        using var request = Request(HttpMethod.Post, "/api/clientes", factory.Token(), Body(email: "invalido")); // Formato incorrecto.
+        using var request = Request(HttpMethod.Post, "/api/v1/clientes", factory.Token(), Body(email: "invalido")); // Formato incorrecto.
         using var response = await factory.Client.SendAsync(request); // Validación del DTO interno.
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode); // No persiste.
     }
@@ -79,7 +77,7 @@ public sealed class ClientesTests(ClientesFactory factory) : IClassFixture<Clien
     [InlineData("{no-json")]
     public async Task CuerpoInvalidoDevuelve400(string body)
     {
-        using var request = Request(HttpMethod.Post, "/api/clientes", factory.Token()); // Token autorizado.
+        using var request = Request(HttpMethod.Post, "/api/v1/clientes", factory.Token()); // Token autorizado.
         request.Content = new StringContent(body, Encoding.UTF8, "application/json"); // Conserva cuerpo inválido.
         using var response = await factory.Client.SendAsync(request); // Deserialización real.
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode); // No produce un 500.
@@ -89,7 +87,7 @@ public sealed class ClientesTests(ClientesFactory factory) : IClassFixture<Clien
     {
         foreach (var nombre in new[] { "Zoe", "Ana", "Ana", "Luis" }) // Incluye empate por nombre.
         {
-            using var request = Request(HttpMethod.Post, "/api/clientes", factory.Token(), Body(nombre)); // Alta real.
+            using var request = Request(HttpMethod.Post, "/api/v1/clientes", factory.Token(), Body(nombre)); // Alta real.
             using var response = await factory.Client.SendAsync(request); // Guarda en SQL Server.
             Assert.Equal(HttpStatusCode.Created, response.StatusCode); // Confirma creación.
             var json = await response.Content.ReadFromJsonAsync<JsonElement>(); // Inspecciona DTO.
@@ -100,7 +98,7 @@ public sealed class ClientesTests(ClientesFactory factory) : IClassFixture<Clien
         var ids = new List<string>(); // Acumula páginas para detectar solapamientos.
         foreach (var page in new[] { 1, 2 }) // Recorre dos páginas consecutivas.
         {
-            using var request = Request(HttpMethod.Get, $"/api/v1/clientes?pageNumber={page}&pageSize=2&sortDirection=asc", factory.Token()); // Alias versionado.
+            using var request = Request(HttpMethod.Get, $"/api/v1/clientes?pageNumber={page}&pageSize=2&sortDirection=asc", factory.Token()); // Ruta versionada.
             using var response = await factory.Client.SendAsync(request); // Consulta SQL paginada.
             Assert.Equal(HttpStatusCode.OK, response.StatusCode); // Éxito.
             var data = (await response.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("data"); // Sobre paginado.
@@ -110,19 +108,20 @@ public sealed class ClientesTests(ClientesFactory factory) : IClassFixture<Clien
             Assert.Equal(page == 1 ? "Ana" : "Luis", data.GetProperty("items")[0].GetProperty("nombre").GetString()); // Orden esperado.
         }
         Assert.Equal(4, ids.Distinct().Count()); // Sin duplicados entre páginas estables.
-        using var descending = Request(HttpMethod.Get, "/api/clientes?pageSize=4&sortDirection=desc", factory.Token()); // Invierte todo el orden.
+        using var descending = Request(HttpMethod.Get, "/api/v1/clientes?pageSize=4&sortDirection=desc", factory.Token()); // Invierte todo el orden.
         using var descendingResponse = await factory.Client.SendAsync(descending); // Consulta inversa.
         var reverse = (await descendingResponse.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("data").GetProperty("items"); // Resultado descendente.
         Assert.Equal(ids.AsEnumerable().Reverse(), reverse.EnumerateArray().Select(x => x.GetProperty("id").GetString()!)); // Comprueba desempate inverso.
-        using var beyond = Request(HttpMethod.Get, "/api/clientes?pageNumber=100", factory.Token()); // Página sin filas.
+        using var beyond = Request(HttpMethod.Get, "/api/v1/clientes?pageNumber=100", factory.Token()); // Página sin filas.
         using var beyondResponse = await factory.Client.SendAsync(beyond); // Debe ser éxito vacío.
         Assert.Empty((await beyondResponse.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("data").GetProperty("items").EnumerateArray()); // Nunca 404 por página vacía.
     }
     [Fact] // Verifica exposición y documentación.
-    public async Task OpenApiDocumentaLosDosAlias()
+    public async Task OpenApiDocumentaSoloVersionUno()
     {
         var document = await factory.Client.GetFromJsonAsync<JsonElement>("/openapi/v1.json"); // Documento generado.
-        foreach (var path in new[] { "/api/clientes", "/api/v1/clientes" }) // Dos rutas compatibles.
+        Assert.Single(document.GetProperty("paths").EnumerateObject()); // No publica alias sin versión.
+        foreach (var path in new[] { "/api/v1/clientes" }) // Única versión implementada.
         {
             var item = document.GetProperty("paths").GetProperty(path); // Operaciones publicadas.
             Assert.True(item.TryGetProperty("get", out _)); // Consulta documentada.
@@ -133,7 +132,7 @@ public sealed class ClientesTests(ClientesFactory factory) : IClassFixture<Clien
     [Fact] // Un formato distinto de JSON conserva el sobre de error.
     public async Task FormatoNoSoportadoDevuelve415()
     {
-        using var request = Request(HttpMethod.Post, "/api/clientes", factory.Token()); // Usuario autorizado.
+        using var request = Request(HttpMethod.Post, "/api/v1/clientes", factory.Token()); // Usuario autorizado.
         request.Content = new StringContent("texto", Encoding.UTF8, "text/plain"); // Formato no soportado.
         using var response = await factory.Client.SendAsync(request); // Ejecuta selección del formatter.
         Assert.Equal(HttpStatusCode.UnsupportedMediaType, response.StatusCode); // HTTP 415.
@@ -144,7 +143,7 @@ public sealed class ClientesTests(ClientesFactory factory) : IClassFixture<Clien
     {
         await using var failing = factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services => services.AddScoped<IClienteRepository, FailingRepository>())); // Puerto fallido solo en este host.
         using var client = failing.CreateClient(new() { BaseAddress = new Uri("https://localhost") }); // Host independiente.
-        using var request = Request(HttpMethod.Get, "/api/clientes", factory.Token()); // Token válido.
+        using var request = Request(HttpMethod.Get, "/api/v1/clientes", factory.Token()); // Token válido.
         using var response = await client.SendAsync(request); // Provoca fallo tras autorización.
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode); // HTTP 500.
         Assert.DoesNotContain("dato-secreto", await response.Content.ReadAsStringAsync()); // Sanitización observable.
@@ -157,13 +156,38 @@ public sealed class ClientesTests(ClientesFactory factory) : IClassFixture<Clien
         using var client = isolated.CreateClient(new() { BaseAddress = new Uri("https://localhost") }); // Solicitudes HTTPS.
         for (var index = 0; index <= 600; index++) // Supera la ventana sin tocar SQL.
         {
-            using var response = await client.GetAsync("/api/clientes"); // Solicitud anónima contabilizada.
+            using var response = await client.GetAsync("/api/v1/clientes"); // Solicitud anónima contabilizada.
             if (index == 600) // Primera solicitud fuera del presupuesto.
             {
                 Assert.Equal((HttpStatusCode)429, response.StatusCode); // Protección efectiva.
                 Assert.Equal(429, (await response.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("statusCode").GetInt32()); // Sobre uniforme.
             }
         }
+    }
+    [Theory] // Verifica que rutas inexistentes no se confundan con consultas vacías.
+    [InlineData("/api/clientes")]
+    [InlineData("/api/v2/clientes")]
+    public async Task RutaNoPublicadaDevuelve404(string path)
+    {
+        using var response = await factory.Client.GetAsync(path); // No coincide con ningún controlador.
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode); // Conserva semántica HTTP.
+        var body = await response.Content.ReadFromJsonAsync<JsonElement>(); // Sobre del middleware.
+        Assert.Equal(404, body.GetProperty("statusCode").GetInt32()); // Estado consistente.
+        Assert.Contains("Ruta no encontrada", body.GetProperty("message").GetString()); // Diagnóstico específico.
+    }
+    [Fact] // Comprueba raíz, interfaz y configuración del documento consumido.
+    public async Task InicioRedirigeASwaggerYLaInterfazCarga()
+    {
+        using var root = await factory.Client.GetAsync("/"); // El cliente de pruebas no sigue redirecciones.
+        Assert.Equal(HttpStatusCode.Redirect, root.StatusCode); // Ya no devuelve 404 en desarrollo.
+        Assert.Equal("swagger/index.html", root.Headers.Location?.OriginalString); // Destino relativo correcto.
+        using var ui = await factory.Client.GetAsync("/swagger/index.html"); // HTML integrado de Swagger UI.
+        Assert.Equal(HttpStatusCode.OK, ui.StatusCode); // Documentación accesible.
+        Assert.Equal("text/html", ui.Content.Headers.ContentType?.MediaType); // No es un wrapper JSON.
+        var initializer = await factory.Client.GetStringAsync("/swagger/index.js"); // Configuración usada por el navegador.
+        Assert.Contains("../openapi/v1.json", initializer); // Consume el documento real publicado.
+        using var asset = await factory.Client.GetAsync("/swagger/swagger-ui-bundle.js"); // Dependencia requerida por la interfaz.
+        Assert.Equal(HttpStatusCode.OK, asset.StatusCode); // Assets servidos sin CDN externo.
     }
     private sealed class FailingRepository : IClienteRepository // Adaptador negativo exclusivo de pruebas.
     {
