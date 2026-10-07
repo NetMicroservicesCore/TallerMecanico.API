@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Taller mecánico · arquitectura de clientes",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "consumer",
+      "type": "external",
+      "label": "Aplicación cliente",
+      "sublabel": "JSON sobre HTTPS",
+      "pos": [
+        40,
+        70
+      ],
+      "size": [
+        190,
+        70
+      ]
+    },
+    {
+      "id": "pipeline",
+      "type": "security",
+      "label": "Pipeline HTTP",
+      "sublabel": "JWT · permisos · límites",
+      "pos": [
+        390,
+        70
+      ],
+      "size": [
+        210,
+        70
+      ]
+    },
+    {
+      "id": "controller",
+      "type": "backend",
+      "label": "ClientesController",
+      "sublabel": "Validación y wrappers",
+      "pos": [
+        770,
+        70
+      ],
+      "size": [
+        210,
+        70
+      ]
+    },
+    {
+      "id": "service",
+      "type": "backend",
+      "label": "ClienteService",
+      "sublabel": "Casos de uso y DTOs",
+      "pos": [
+        770,
+        220
+      ],
+      "size": [
+        210,
+        70
+      ]
+    },
+    {
+      "id": "repository",
+      "type": "backend",
+      "label": "ClienteRepository",
+      "sublabel": "Consultas LINQ asíncronas",
+      "pos": [
+        390,
+        220
+      ],
+      "size": [
+        210,
+        70
+      ]
+    },
+    {
+      "id": "database",
+      "type": "database",
+      "label": "SQL Server",
+      "sublabel": "EF Core · índices · migración",
+      "pos": [
+        40,
+        220
+      ],
+      "size": [
+        210,
+        70
+      ]
+    },
+    {
+      "id": "domain",
+      "type": "backend",
+      "label": "Dominio Cliente",
+      "sublabel": "Datos de cliente y dirección",
+      "pos": [
+        770,
+        370
+      ],
+      "size": [
+        210,
+        70
+      ]
+    },
+    {
+      "id": "context",
+      "type": "backend",
+      "label": "TallerDbContext",
+      "sublabel": "Mapeo y unidad de trabajo",
+      "pos": [
+        390,
+        370
+      ],
+      "size": [
+        210,
+        70
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "consumer",
+      "to": "pipeline",
+      "label": "GET / POST"
+    },
+    {
+      "from": "pipeline",
+      "to": "controller",
+      "label": "Autorización"
+    },
+    {
+      "from": "controller",
+      "to": "service",
+      "label": "Ejecutar caso de uso",
+      "labelDy": 70
+    },
+    {
+      "from": "service",
+      "to": "repository",
+      "label": "IClienteRepository"
+    },
+    {
+      "from": "repository",
+      "to": "database",
+      "label": "SQL parametrizado"
+    },
+    {
+      "from": "service",
+      "to": "domain",
+      "label": "Crear entidad",
+      "labelDy": 70
+    },
+    {
+      "from": "repository",
+      "to": "context",
+      "label": "Persistir / consultar",
+      "labelDy": 70
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "Seguridad",
+      "items": [
+        "CanManageClientes protege ambas operaciones.",
+        "Errores sin detalles internos; correlación por solicitud."
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Consulta",
+      "items": [
+        "Paginación acotada; nombre ascendente o descendente.",
+        "Desempate por Id; proyección sin seguimiento."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Registro",
+      "items": [
+        "DTO validado → entidad → SaveChangesAsync.",
+        "201 con ResponseWrapper y DTO del cliente."
+      ]
+    }
+  ]
+}

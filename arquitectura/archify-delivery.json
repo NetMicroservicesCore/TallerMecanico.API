@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "deliver",
+  "type": "architecture",
+  "input": "C:\\Source IA\\Restfull.API\\TallerMecanico.API\\arquitectura\\clientes.architecture.json",
+  "output": "C:\\Source IA\\Restfull.API\\TallerMecanico.API\\arquitectura\\clientes.html",
+  "specification": {
+    "sha256": "9c7c969d23a8431e3d2be265d33486229d8b02abab57391b5ded158c2ec8fc1f",
+    "bytes": 3704
+  },
+  "artifact": {
+    "sha256": "c772d2fe54dc256718437c601683c04667526a663d8b27d9ade0b3483de0e2a1",
+    "bytes": 806014
+  },
+  "validation": {
+    "checksPassed": 9,
+    "checkCount": 9,
+    "compositionProfile": "showcase",
+    "compositionStatus": "pass",
+    "errors": 0,
+    "warnings": 0
+  }
+}

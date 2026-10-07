@@ -13,6 +13,10 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["API.Principal/API.Principal.csproj", "API.Principal/"]
+# Copia dependencias de las capas antes de restaurar para conservar la caché de Docker.
+COPY ["Taller.Domain/Taller.Domain.csproj", "Taller.Domain/"]
+COPY ["Taller.Application/Taller.Application.csproj", "Taller.Application/"]
+COPY ["Taller.Infrastructure/Taller.Infrastructure.csproj", "Taller.Infrastructure/"]
 RUN dotnet restore "./API.Principal/API.Principal.csproj"
 COPY . .
 WORKDIR "/src/API.Principal"

@@ -1,0 +1,39 @@
+@baseUrl = https://localhost:7230
+# Sustituye por un access token de tu emisor OIDC con permission=clientes.manage.
+@token = REEMPLAZAR_CON_ACCESS_TOKEN
+
+### Registrar cliente: espera 201; el id lo asigna el servidor.
+POST {{baseUrl}}/api/clientes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "data": {
+    "nombre": "Ana",
+    "apellidoPaterno": "Pérez",
+    "apellidoMaterno": "López",
+    "telefono": "5551234567",
+    "telefonoCelular": "+525551234568",
+    "email": "ana@example.test",
+    "telefonoContacto": "5551234569",
+    "nombreCompletoContacto": "Juan Pérez López",
+    "emailContacto": "contacto@example.test",
+    "calle": "Calle Primera 100",
+    "colonia": "Centro",
+    "municipio": "Puebla",
+    "estado": "Puebla",
+    "codigoPostal": "01234"
+  }
+}
+
+### Consultar primera página ascendente: espera 200.
+GET {{baseUrl}}/api/clientes?pageNumber=1&pageSize=20&sortDirection=asc
+Authorization: Bearer {{token}}
+
+### Consultar primera página descendente: espera 200.
+GET {{baseUrl}}/api/clientes?pageNumber=1&pageSize=20&sortDirection=desc
+Authorization: Bearer {{token}}
+
+### Alias versionado del mismo caso de uso: espera 200.
+GET {{baseUrl}}/api/v1/clientes?pageNumber=1&pageSize=20&sortDirection=asc
+Authorization: Bearer {{token}}
