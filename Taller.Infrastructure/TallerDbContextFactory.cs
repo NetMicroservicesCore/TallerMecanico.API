@@ -7,7 +7,11 @@ public sealed class TallerDbContextFactory : IDesignTimeDbContextFactory<TallerD
     public TallerDbContext CreateDbContext(string[] args)
     {
         var connection = Environment.GetEnvironmentVariable("ConnectionStrings__Taller") // Usa la base explícita del despliegue.
-            ?? @"Server=(localdb)\MSSQLLocalDB;Database=TallerMecanicoDev;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True"; // Solo fallback local de herramientas.
+            ?? @"Server=localhost,14033;Database=TallerMecanicoDev;User Id=sa;Password=Sistemas410;Integrated Security=False;Encrypt=True;TrustServerCertificate=True"; // Solo fallback local de herramientas.
         return new(new DbContextOptionsBuilder<TallerDbContext>().UseSqlServer(connection).Options); // No conecta hasta ejecutar una operación.
     }
 }
+//var connection = Environment.GetEnvironmentVariable("ConnectionStrings__Taller") // Usa la base explícita del despliegue.
+//?? @"Server=172.27.27.85;Port=1433;;Database=TallerMecanicoDev;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True"; // Solo fallback local de herramientas.
+
+//Server=localhost,14033;Database=TallerMecanicoDev;User Id=sa;Password=Sistemas410;Integrated Security=False;Encrypt=True;TrustServerCertificate=True
